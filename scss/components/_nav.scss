@@ -1,0 +1,46 @@
+.navbar-odin {
+  border-radius: 0px;
+  background-color: #343a40;
+
+  .nav-link {
+    color: rgba(255,255,255, 0.5);
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+
+  .nav-item {
+    &.active {
+      .nav-link {
+        color: #ffffff;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .navbar-brand {
+    color: burlywood;
+  }
+
+  .navbar-toggler {
+    padding: 0;
+
+    &:focus {
+      outline: none;
+    }
+
+    span {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .navbar-toggler-icon {
+    width: 30px;
+    height: 2px;
+    background-color: #ffffff;
+    margin-bottom: 6px;
+  }
+}

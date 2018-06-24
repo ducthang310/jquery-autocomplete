@@ -1,0 +1,45 @@
+.btn-primary {
+  background-color: $primary-color;
+  box-shadow: inset 0 0 0 1px #dee2e6, inset 0 0 0 2px transparent, inset 0 0 0 3px transparent;
+}
+.btn-line {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px #c4c4c4, inset 0 0 0 2px transparent, inset 0 0 0 3px transparent;
+  color: $text-color-default;
+
+  &:hover {
+    background-color: rgba(0,132,191,1);
+    color: #fff;
+  }
+}
+.text-area {
+  min-height: 200px;
+  resize: vertical;
+}
+.ta-sh {
+  min-height: 100px;
+}
+
+.btn {
+  font-size: $main-font-size;
+  border-radius: 2px;
+}
+
+.form-control {
+  border-radius: 2px;
+
+
+
+  &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #e4e4e4;
+  }
+  &::-moz-placeholder { /* Firefox 19+ */
+    color: #e4e4e4
+  }
+  &:-ms-input-placeholder { /* IE 10+ */
+    color: #e4e4e4
+  }
+  &:-moz-placeholder { /* Firefox 18- */
+    color: #e4e4e4
+  }
+}

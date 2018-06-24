@@ -1,0 +1,46 @@
+
+// Body
+$body-bg: #f6f6f6;
+$primary-color: #0084bf;
+
+$primary-color: #0084BF;
+$primary-color-dark: #0073b1;
+
+$text-color-default: rgba(0,0,0,0.75);
+$text-color-gray: rgba(0,0,0,0.4);
+$text-color-gray-light: rgba(0,0,0,0.2);
+
+$error-color: #FD4F4F;
+$color-green: #2F7B15;
+
+$main-font-size: 14px;
+
+
+@mixin section-box-shadow() {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 3px rgba(0,0,0,.2);
+}
+
+@mixin field-border() {
+  border-radius: 2px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.25);
+}
+
+@mixin transition-color-bkg-border () {
+  transition-duration: 167ms;
+  transition-property: background-color,box-shadow,color;
+  transition-timing-function: cubic-bezier(0,0,.2,1);
+}
+
+@mixin ul-clean () {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin three-dots () {
+  white-space: nowrap;
+  overflow:hidden !important;
+  text-overflow: ellipsis;
+}

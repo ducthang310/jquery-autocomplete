@@ -1,0 +1,16 @@
+{
+  "name": "JqueryAutocomplete",
+  "private": true,
+  "version": "1.0.0",
+  "description": "JqueryAutocomplete",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglifyjs": "^0.6.2"
+  },
+  "author": "Duc Thang"
+}

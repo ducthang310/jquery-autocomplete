@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jquery Autocomplete</title>
+    <link href=css/bootstrap.min.css rel=stylesheet>
+    <link href=css/app.css rel=stylesheet>
+</head>
+<body>
+<div class="wrapper">
+    <nav class="navbar navbar-expand-md navbar-odin">
+        <div class="container">
+            <a class="navbar-brand" href="">
+                JqueryAutocomplete
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://shiroad.com" target="_blank">ShiRoad</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main role="main" class="container main-content">
+        <div class="row">
+            <!-----------------.Left .----------------------->
+            <div class="col-sm-6 col-md-8">
+                <div class="box-shadow col-wrap">
+                    <!-----------------.section Performance .----------------------->
+                    <div class="section">
+                        <div class="section__heading">Performance log</div>
+                        <div class="section__content">
+                            <p>
+                                Start time <span class="txt-tooltip">(after typing & before searching)</span><br>
+                                End time <span class="txt-tooltip">(finish searching & after rendering all results)</span>
+                            </p>
+
+                            <ul class="logs">
+                                <li class="logs__item">
+                                    <div class="logs__keyword">4. Google</div>
+                                    <div class="row logs__detail">
+                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
+                                    </div>
+                                </li>
+                                <li class="logs__item">
+                                    <div class="logs__keyword">3. Apple</div>
+                                    <div class="row logs__detail">
+                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
+                                    </div>
+                                </li>
+                                <li class="logs__item">
+                                    <div class="logs__keyword">2. Github</div>
+                                    <div class="row logs__detail">
+                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
+                                    </div>
+                                </li>
+                                <li class="logs__item">
+                                    <div class="logs__keyword">1. Microsoft</div>
+                                    <div class="row logs__detail">
+                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
+                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="od-divider"></div>
+
+                    <!-----------------.section History .----------------------->
+                    <div class="section history">
+                        <div class="section__heading">History</div>
+                        <div class="section__content row">
+                            <div class="col-sm-3 col-md-4">
+                                <button type="button" class="btn history__btn">Clear all history</button>
+                            </div>
+                            <div class="col-sm-3 col-md-4">
+                                <button type="button" class="btn history__btn">View search history</button>
+                            </div>
+                            <div class="col-sm-3 col-md-4">
+                                <button type="button" class="btn history__btn">View selected items</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="od-divider"></div>
+
+                    <!-----------------.section Data .----------------------->
+                    <div class="section data">
+                        <div class="section__heading">Data</div>
+                        <div class="section__content">
+                            <p><a href="" target="_blank">View all data</a>  <span class="txt-tooltip">(with beauty format - on https://jsonviewer.com/fdafsfdf)</span></p>
+                            <p>
+                                Information of current data:<br>
+                                <span id="data_number_items">Has 400 items</span><br>
+                                Character length is <span id="data_character_length">69696969</span>
+                            </p>
+
+                            <div class="form-group">
+                                <textarea class="form-control text-area" placeholder="Put your json data in here…"></textarea>
+                                <button type="button" class="btn btn-primary data__btn">Import new data</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-----------------.Right .----------------------->
+            <div class="col-sm-6 col-md-4">
+                <div class="box-shadow col-wrap i-search">
+                    <div class="form-group i-search__wrap">
+                        <label class="i-search__heading">Input service name</label>
+                        <input type="text" class="form-control" id="i_search"/>
+                        <div class="oac box-shadow">
+                            <ul class="oac__list">
+                                <li class="oac__item">
+                                    <div class="oac__img" style=""></div>
+                                    <div class="oac__name">Google</div>
+                                </li>
+                                <li class="oac__item active">
+                                    <div class="oac__img" style=""></div>
+                                    <div class="oac__name">Iphone</div>
+                                </li>
+                                <li class="oac__item">
+                                    <div class="oac__img" style=""></div>
+                                    <div class="oac__name">Apple</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
