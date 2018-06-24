@@ -245,7 +245,7 @@ body {
 
 .i-search__heading {
   font-weight: bold;
-  padding: 8px 15px;
+  padding: 8px 0;
 }
 
 .oac {
@@ -256,6 +256,7 @@ body {
   overflow-x: auto;
   font-size: 13px;
   display: none;
+  z-index: 1;
 }
 
 .oac.active {
