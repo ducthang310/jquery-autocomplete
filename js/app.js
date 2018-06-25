@@ -24,6 +24,10 @@
 (function ($) {
   'use strict';
 
+  if (!Date.now) {
+    Date.now = function() { return new Date().getTime(); }
+  }
+
   var objectExtend = function (a, b) {
     if (a == null || b == null) {
       return a;
@@ -50,7 +54,7 @@
         .toString(16)
         .substring(1);
     }
-    return s4() + s4() + '-' + s4()
+    return 'x' + s4() + s4() + '-' + s4()
   };
 
   var createDomLi = function (item, index, wrapperId) {
@@ -63,12 +67,15 @@
     divImg.className = 'oac__img';
     divImg.setAttribute('data-index', index);
     divImg.setAttribute('data-wrapper-id', wrapperId);
+    var img = document.createElement("img");
+    img.setAttribute('src', item.thumbnailUrl);
     var divName = document.createElement("div");
     divName.className = 'oac__name';
     divName.setAttribute('data-index', index);
     divName.innerHTML = item.name;
     divName.setAttribute('data-wrapper-id', wrapperId);
 
+    divImg.appendChild(img);
     li.appendChild(divImg);
     li.appendChild(divName);
     li.appendChild(divName);
@@ -108,7 +115,8 @@
         dom: _.elements[i],
         suggestLayer: null,
         timeoutKeyup: null,
-        items: _.originalItems
+        items: _.originalItems,
+        selectedItem: null
       };
 
       _.superElements.push(elmData);
@@ -140,18 +148,19 @@
       se.dom.addEventListener("keyup", function () {
         var wrapperId = this.getAttribute('data-wrapper-id');
         var keyword = this.value;
+        clearTimeout(_.timeoutKeyup);
         _.timeoutKeyup = setTimeout(function () {
           _.query(keyword, wrapperId);
-        }, 300);
+        }, 400);
       });
 
       // Bind event: for wrapper - event delegation
       document.getElementById(se.idListItem).addEventListener("click", function (e) {
         // e.target was the clicked element
-        console.log(e.target.getAttribute('data-index'));
-        if (e.target && e.target.matches("a.classA")) {
-          console.log("Anchor element clicked!");
-        }
+        var wrapperId = e.target.getAttribute('data-wrapper-id');
+        var index = e.target.getAttribute('data-index');
+
+        _.selectItem(wrapperId, index);
       });
     }
 
@@ -162,15 +171,29 @@
     var _ = this;
     var newItems = [];
 
+    var startTime = Date.now();
+
     for (var i = 0, len = _.originalItems.length; i < len; i++) {
-      if (-1 < _.originalItems[i].name.toLowerCase().indexOf(keyword)) {
+      if (-1 < _.originalItems[i].name.toLowerCase().indexOf(keyword.toLowerCase())) {
         newItems.push(_.originalItems[i])
       }
     }
 
-    console.log(newItems, wrapperId)
-
     _.setItems(newItems, wrapperId);
+
+    var endTime = Date.now();
+
+    _.addLog({
+      keyword: keyword,
+      start_time: startTime,
+      end_time: endTime,
+      execution_time: endTime - startTime
+    })
+  };
+
+  $.fn.selectItem = function (wrapperId, index) {
+    this.superElementsObj[wrapperId].selectedItem = this.superElementsObj[wrapperId].items[index];
+    this.superElementsObj[wrapperId].dom.value = this.superElementsObj[wrapperId].selectedItem.name;
   };
 
   $.fn.getItems = function () {
@@ -188,12 +211,8 @@
     //   typeof _.options.cb_error_set_items === 'function' && _.options.cb_error_set_items(e, _);
     // }
 
-    // Validate format of items variable before updating
     _.superElementsObj[wrapperId].items = items;
 
-    // If data is valid
-    // --> clear all history
-    _.clearHistory();
     // --> re-render dom
     _.render(wrapperId);
 
@@ -239,7 +258,13 @@
     console.log(wrapperId);
 
     console.log(_.superElementsObj[wrapperId].items);
-
+    var ul = document.querySelector('#' + _.superElementsObj[wrapperId].idListItem);
+    console.log(ul);
+    ul.innerHTML = '';
+    for (var j = 0, len1 = _.superElementsObj[wrapperId].items.length; j < len1; j++) {
+      var li = createDomLi(_.superElementsObj[wrapperId].items[j], j, wrapperId)
+      ul.appendChild(li);
+    }
 
     // Virtual dom
 
@@ -277,11 +302,14 @@
     return _;
   };
 
-  $.fn.addLogs = function (log) {
-    this.logs.push(log);
+  $.fn.addLog = function (log) {
+    var _ = this;
+    _.logs.push(log);
 
     // Run callback: after_set_logs
-    typeof _.options.cb_after_update_logs === 'function' && _.options.cb_after_update_logs(_.logs, _);
+    typeof _.options.cb_after_update_logs === 'function' && _.options.cb_after_update_logs(log, _);
+
+    return _;
   };
 
   $.fn.getLogs = function () {
@@ -294,7 +322,7 @@
     _.logs = JSON.parse(JSON.stringify(newLogs));
 
     // Run callback: after_set_logs
-    typeof _.options.cb_after_update_logs === 'function' && _.options.cb_after_update_logs(_.logs, _);
+    typeof _.options.cb_after_update_logs === 'function' && _.options.cb_after_update_logs(null, _);
 
     return _;
   };
@@ -321,5 +349,45 @@
 
 })(odin);
 
+var _thor = {
+  createDomLog: function (log, index) {
+    var li = document.createElement("li");
+    li.className = 'logs__item';
+    var divKeyword = document.createElement("div");
+    divKeyword.className = 'logs__keyword';
+    divKeyword.innerHTML = index + '. ' + log.keyword;
+    var divDetail = document.createElement("div");
+    divDetail.className = 'row logs__detail';
 
-var aaa = odin('.i_search').ac({fap: 1}, TABLE_DATA);
+    var divStart = document.createElement("div");
+    divStart.className = 'col-sm-4 col-md-4';
+    divStart.innerHTML = 'Start time: ' + log.start_time;
+    var divEnd = document.createElement("div");
+    divEnd.className = 'col-sm-4 col-md-4';
+    divEnd.innerHTML = 'End time: ' + log.end_time;
+    var divExe = document.createElement("div");
+    divExe.className = 'col-sm-4 col-md-4';
+    divExe.innerHTML = 'Execution time: ' + log.execution_time + 'ms';
+
+    divDetail.appendChild(divStart);
+    divDetail.appendChild(divEnd);
+    divDetail.appendChild(divExe);
+    li.appendChild(divKeyword);
+    li.appendChild(divDetail);
+    return li;
+  }
+};
+
+
+// Start ----> FAP
+var loki = odin('.i_search').ac({
+  cb_after_update_logs: function (log, sOdin) {
+    var logContainer = document.getElementById('main_logs');
+    if (log && sOdin.logs.length) {
+      logContainer.prepend(_thor.createDomLog(log, sOdin.logs.length));
+    } else {
+      logContainer.innerHTML = '';
+    }
+
+  }
+}, TABLE_DATA);

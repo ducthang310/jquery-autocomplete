@@ -44,40 +44,26 @@
                                 End time <span class="txt-tooltip">(finish searching & after rendering all results)</span>
                             </p>
 
-                            <ul class="logs">
-                                <li class="logs__item">
-                                    <div class="logs__keyword">4. Google</div>
-                                    <div class="row logs__detail">
-                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
-                                    </div>
-                                </li>
-                                <li class="logs__item">
-                                    <div class="logs__keyword">3. Apple</div>
-                                    <div class="row logs__detail">
-                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
-                                    </div>
-                                </li>
-                                <li class="logs__item">
-                                    <div class="logs__keyword">2. Github</div>
-                                    <div class="row logs__detail">
-                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
-                                    </div>
-                                </li>
-                                <li class="logs__item">
-                                    <div class="logs__keyword">1. Microsoft</div>
-                                    <div class="row logs__detail">
-                                        <div class="col-sm-4 col-md-4">Start time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">End time: 123123123</div>
-                                        <div class="col-sm-4 col-md-4">Execution Time: 123123123</div>
-                                    </div>
-                                </li>
+                            <ul class="logs" id="main_logs">
+                                <!--<li class="logs__item">-->
+                                    <!--<div class="logs__keyword">2. Github</div>-->
+                                    <!--<div class="row logs__detail">-->
+                                        <!--<div class="col-sm-4 col-md-4">Start time: 123123123</div>-->
+                                        <!--<div class="col-sm-4 col-md-4">End time: 123123123</div>-->
+                                        <!--<div class="col-sm-4 col-md-4">Execution Time: 123123123</div>-->
+                                    <!--</div>-->
+                                <!--</li>-->
+                                <!--<li class="logs__item">-->
+                                    <!--<div class="logs__keyword">1. Microsoft</div>-->
+                                    <!--<div class="row logs__detail">-->
+                                        <!--<div class="col-sm-4 col-md-4">Start time: 123123123</div>-->
+                                        <!--<div class="col-sm-4 col-md-4">End time: 123123123</div>-->
+                                        <!--<div class="col-sm-4 col-md-4">Execution Time: 123123123</div>-->
+                                    <!--</div>-->
+                                <!--</li>-->
                             </ul>
+
+                            <button type="button" class="btn btn-line" onclick="loki.clearLogs()">Clear logs</button>
                         </div>
                     </div>
 
@@ -128,18 +114,24 @@
                     <div class="form-group i-search__wrap">
                         <label class="i-search__heading">Input service name</label>
                         <input type="text" class="form-control i_search" id="i_search"/>
-                        <!--<div class="oac box-shadow">-->
+                        <!--<div class="oac box-shadow active">-->
                             <!--<ul class="oac__list">-->
                                 <!--<li class="oac__item">-->
-                                    <!--<div class="oac__img" style=""></div>-->
+                                    <!--<div class="oac__img" style="">-->
+                                        <!--<img src="xxx" />-->
+                                    <!--</div>-->
                                     <!--<div class="oac__name">Google</div>-->
                                 <!--</li>-->
                                 <!--<li class="oac__item active">-->
-                                    <!--<div class="oac__img" style=""></div>-->
+                                    <!--<div class="oac__img" style="">-->
+                                        <!--<img src="xxx" />-->
+                                    <!--</div>-->
                                     <!--<div class="oac__name">Iphone</div>-->
                                 <!--</li>-->
                                 <!--<li class="oac__item">-->
-                                    <!--<div class="oac__img" style=""></div>-->
+                                    <!--<div class="oac__img" style="">-->
+                                        <!--<img src="xxx" />-->
+                                    <!--</div>-->
                                     <!--<div class="oac__name">Apple</div>-->
                                 <!--</li>-->
                             <!--</ul>-->
