@@ -57,6 +57,55 @@
     return 'x' + s4() + s4() + '-' + s4()
   };
 
+  function h(type, props, ...children) {
+    return { type, props, children };
+  }
+
+  function createElement(node) {
+    if (typeof node === 'string') {
+      return document.createTextNode(node);
+    }
+    const $el = document.createElement(node.type);
+    node.children
+      .map(createElement)
+      .forEach($el.appendChild.bind($el));
+    return $el;
+  }
+
+  function changed(node1, node2) {
+    return typeof node1 !== typeof node2 ||
+      typeof node1 === 'string' && node1 !== node2 ||
+      node1.type !== node2.type
+  }
+
+  function updateElement($parent, newNode, oldNode, index = 0) {
+    if (!oldNode) {
+      $parent.appendChild(
+        createElement(newNode)
+      );
+    } else if (!newNode) {
+      $parent.removeChild(
+        $parent.childNodes[index]
+      );
+    } else if (changed(newNode, oldNode)) {
+      $parent.replaceChild(
+        createElement(newNode),
+        $parent.childNodes[index]
+      );
+    } else if (newNode.type) {
+      const newLength = newNode.children.length;
+      const oldLength = oldNode.children.length;
+      for (let i = 0; i < newLength || i < oldLength; i++) {
+        updateElement(
+          $parent.childNodes[index],
+          newNode.children[i],
+          oldNode.children[i],
+          i
+        );
+      }
+    }
+  }
+
   var createDomLi = function (item, index, wrapperId) {
 
     var li = document.createElement("li");
@@ -83,15 +132,90 @@
     return li;
   };
 
+  var updateDomLi = function (liDom, newItem) {
+    liDom.childNodes[0].childNodes[0].setAttribute('src', newItem.thumbnailUrl);
+    liDom.childNodes[1].innerHTML = newItem.name;
+  };
+
+  var createHtmlFromItems = function(items, wrapperId, idList) {
+    var html = '';
+    var ul = {
+      type: 'ul',
+      props: {
+        className: 'logs',
+        id: idList
+      },
+      children: []
+    };
+    for (var i = 0, len = items.length; i < len; i++) {
+      var item = items[i];
+      // ul.children.push({
+      //   type: 'li',
+      //   props: {
+      //     className: 'oac__item'
+      //   },
+      //   children: [
+      //     {
+      //       type: 'div',
+      //       props: {
+      //         className: 'oac__img',
+      //         'data-index': i,
+      //         'data-wrapper-id': wrapperId
+      //       },
+      //       children: [
+      //         {
+      //           type: 'img',
+      //           props: {
+      //             src: item.thumbnailUrl
+      //           },
+      //           children: []
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       type: 'div',
+      //       props: {
+      //         className: 'oac__name',
+      //         'data-index': i,
+      //         'data-wrapper-id': wrapperId
+      //       },
+      //       children: [
+      //         item.name
+      //       ]
+      //     }
+      //   ]
+      // });
+
+      html += '<li class="oac__item">'
+        + '<div class="oac__img" data-index="' + i + '" data-wrapper-id="' + wrapperId + '">'
+        + '<img src="' + item.thumbnailUrl + '">'
+        + '</div>'
+        + '<div class="oac__name" data-index="' + i + '" data-wrapper-id="' + wrapperId + '">'
+        + item.name
+        + '</div>'
+        + '</li>';
+    }
+
+
+
+    return html;
+  };
+
   $.fn.ac = function (options, items) {
     var _ = this;
 
+
+    for (var i = 0, len = items.length; i < len; i++) {
+      items[i].originalIndex = i;
+    }
     _.options = {
       cb_after_update_logs: undefined,
-      cb_error_set_items: undefined
+      cb_error_set_items: undefined,
+      use_virtual_dom: true
     };
     _.options = objectExtend(this.options, options);
     _.originalItems = items || [];
+    _.originalItemsObj = {};
     _.selectedItems = [];
     _.searchedKeywords = [];
     _.logs = [];
@@ -116,6 +240,7 @@
         suggestLayer: null,
         timeoutKeyup: null,
         items: _.originalItems,
+        oldItems: [],
         selectedItem: null
       };
 
@@ -211,6 +336,7 @@
     //   typeof _.options.cb_error_set_items === 'function' && _.options.cb_error_set_items(e, _);
     // }
 
+    _.superElementsObj[wrapperId].oldItems = _.superElementsObj[wrapperId].items;
     _.superElementsObj[wrapperId].items = items;
 
     // --> re-render dom
@@ -255,18 +381,105 @@
 
   $.fn.render = function (wrapperId) {
     var _ = this;
-    console.log(wrapperId);
-
-    console.log(_.superElementsObj[wrapperId].items);
     var ul = document.querySelector('#' + _.superElementsObj[wrapperId].idListItem);
-    console.log(ul);
-    ul.innerHTML = '';
-    for (var j = 0, len1 = _.superElementsObj[wrapperId].items.length; j < len1; j++) {
-      var li = createDomLi(_.superElementsObj[wrapperId].items[j], j, wrapperId)
-      ul.appendChild(li);
-    }
 
-    // Virtual dom
+    if (_.options.use_virtual_dom) {
+      // updateElement(ul, createHtmlFromItems(_.superElementsObj[wrapperId].items, wrapperId, _.superElementsObj[wrapperId].idListItem), createHtmlFromItems(_.superElementsObj[wrapperId].oldItems, wrapperId, _.superElementsObj[wrapperId].idListItem));
+
+      var newItems = _.superElementsObj[wrapperId].items;
+      var oldItems = _.superElementsObj[wrapperId].oldItems;
+      var newLength = newItems.length;
+      var oldLength= oldItems.length;
+
+
+      while (ul.firstChild) {
+        ul.removeChild(ul.firstChild);
+      }
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < newLength; i++) {
+        fragment.appendChild(createDomLi(newItems[i], i, wrapperId))
+      }
+      ul.appendChild(fragment);
+      return;
+
+
+
+      if (newLength === 0) {
+        ul.innerHTML = '';
+        while (ul.firstChild) {
+          ul.removeChild(ul.firstChild);
+        }
+      } else if (oldLength === 0) {
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i <newLength; i++) {
+          fragment.appendChild(createDomLi(newItems[i], i, wrapperId))
+        }
+        ul.appendChild(fragment);
+      } else if (oldLength === newLength) {
+        for (var i = 0; i <newLength; i++) {
+          updateDomLi(ul.childNodes[i], newItems[i]);
+        }
+      } else if (oldLength < newLength) {
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < newLength; i++) {
+          if (oldItems[i]) {
+            if (newItems[i] !== oldItems[i]) {
+              updateDomLi(ul.childNodes[i], newItems[i]);
+            }
+          } else {
+            fragment.appendChild(createDomLi(newItems[i], i, wrapperId))
+          }
+        }
+        ul.appendChild(fragment);
+      } else if (newLength < oldLength) {
+        for (var i = oldLength - 1; 0 <= i; i--) {
+          if (newItems[i]) {
+            if (newItems[i] !== oldItems[i]) {
+              updateDomLi(ul.childNodes[i], newItems[i]);
+            }
+          } else {
+            ul.removeChild(ul.childNodes[i]);
+          }
+        }
+      }
+      // for (var i = max - 1; 0 <= i; i--) {
+        // if (!oldItems[i]) {
+        //   ul.appendChild(
+        //     createDomLi(newItems[i], i, wrapperId)
+        //   );
+        // } else if (!newItems[i]) {
+        //   console.log(i)
+        //   if (i === 280) {
+        //     debugger
+        //   }
+        //   ul.removeChild(
+        //     ul.childNodes[i]
+        //   );
+        // } else if (JSON.stringify(newItems[i]) !== JSON.stringify(oldItems[i])) {
+        //   ul.replaceChild(
+        //     createDomLi(newItems[i], i, wrapperId),
+        //     ul.childNodes[i]
+        //   );
+        // }
+
+      //   if (!newItems[i]) {
+      //     ul.removeChild(ul.childNodes[i]);
+      //   } else if (JSON.stringify(newItems[i]) !== JSON.stringify(oldItems[i])) {
+      //     updateDomLi(ul.childNodes[i], newItems[i]);
+      //   }
+      //
+      // }
+
+
+    } else {
+
+      // ul.innerHTML = '';--
+      ul.innerHTML = createHtmlFromItems(_.superElementsObj[wrapperId].items);
+      // for (var j = 0, len1 = _.superElementsObj[wrapperId].items.length; j < len1; j++) {
+      //   var li = createDomLi(_.superElementsObj[wrapperId].items[j], j, wrapperId);
+      //   ul.appendChild(li);
+      // }
+    }
 
     return _;
   };
@@ -360,21 +573,44 @@ var _thor = {
     divDetail.className = 'row logs__detail';
 
     var divStart = document.createElement("div");
-    divStart.className = 'col-sm-4 col-md-4';
+    divStart.className = 'col-sm-6 col-md-3';
     divStart.innerHTML = 'Start time: ' + log.start_time;
     var divEnd = document.createElement("div");
-    divEnd.className = 'col-sm-4 col-md-4';
+    divEnd.className = 'col-sm-6 col-md-3';
     divEnd.innerHTML = 'End time: ' + log.end_time;
     var divExe = document.createElement("div");
-    divExe.className = 'col-sm-4 col-md-4';
+    divExe.className = 'col-sm-6 col-md-3';
     divExe.innerHTML = 'Execution time: ' + log.execution_time + 'ms';
+    var divDom = document.createElement("div");
+    if (loki.options.use_virtual_dom) {
+      divDom.className = 'col-sm-6 col-md-3 v-dom';
+      divDom.innerHTML = 'Virtual Dom';
+    } else {
+      divDom.className = 'col-sm-6 col-md-3 r-dom';
+      divDom.innerHTML = 'Real Dom';
+    }
 
     divDetail.appendChild(divStart);
     divDetail.appendChild(divEnd);
     divDetail.appendChild(divExe);
+    divDetail.appendChild(divDom);
     li.appendChild(divKeyword);
     li.appendChild(divDetail);
     return li;
+  },
+
+  clearLogs: function () {
+    loki.clearLogs();
+  },
+
+  toggleVirtualDom: function () {
+    loki.options.use_virtual_dom = !loki.options.use_virtual_dom;
+    if (loki.options.use_virtual_dom) {
+      document.getElementById('v-dom-stt').innerText = 'using virtual dom';
+    } else {
+      document.getElementById('v-dom-stt').innerText = 'using real dom'
+    }
+
   }
 };
 

@@ -44,6 +44,11 @@
                                 End time <span class="txt-tooltip">(finish searching & after rendering all results)</span>
                             </p>
 
+                            <p>
+                                <button type="button" class="btn btn-line" onclick="_thor.clearLogs()">Clear logs</button>
+                                <button type="button" class="btn btn-line" onclick="_thor.toggleVirtualDom()">Toggle virtual dom</button><span id="v-dom-stt">using virtual dom</span>
+                            </p>
+
                             <ul class="logs" id="main_logs">
                                 <!--<li class="logs__item">-->
                                     <!--<div class="logs__keyword">2. Github</div>-->
@@ -62,8 +67,6 @@
                                     <!--</div>-->
                                 <!--</li>-->
                             </ul>
-
-                            <button type="button" class="btn btn-line" onclick="loki.clearLogs()">Clear logs</button>
                         </div>
                     </div>
 
